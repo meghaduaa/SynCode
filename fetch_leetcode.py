@@ -2,11 +2,9 @@ import os
 import json
 import time
 import requests
-from bs4 import BeautifulSoup
-
 from datetime import datetime
 
-# Load env variables
+# Load environment variables
 USERNAME = os.getenv("LEETCODE_USERNAME")
 SESSION = os.getenv("LEETCODE_SESSION")
 CSRF = os.getenv("LEETCODE_CSRF")
@@ -113,18 +111,27 @@ def fetch_submissions():
 
 
 def fetch_code(submission_id):
-    url = f"https://leetcode.com/submissions/detail/{submission_id}/"
-    res = requests.get(url, headers=HEADERS)
-    soup = BeautifulSoup(res.text, "html.parser")
+    query = {
+        "operationName": "submissionDetails",
+        "query": """
+            query submissionDetails($submissionId: Int!) {
+              submissionDetail(submissionId: $submissionId) {
+                code
+              }
+            }
+        """,
+        "variables": {
+            "submissionId": int(submission_id)
+        }
+    }
 
-    for script in soup.find_all("script"):
-        if "submissionCode" in script.text:
-            start = script.text.find("submissionCode") + len("submissionCode") + 3
-            end = script.text.find("editCodeUrl") - 3
-            raw = script.text[start:end]
-            raw = raw.encode("utf-8").decode("unicode_escape")
-            return raw
-    return None
+    res = requests.post(GRAPHQL_ENDPOINT, json=query, headers=HEADERS)
+    if res.status_code == 200:
+        data = res.json()
+        return data["data"]["submissionDetail"]["code"]
+    else:
+        print(f"[!] Error fetching code (HTTP {res.status_code}): {res.text}")
+        return None
 
 
 def get_problem_difficulty(title_slug):
@@ -185,7 +192,6 @@ def main():
         difficulty = get_problem_difficulty(sub["titleSlug"])
         save_submission(sub, code, difficulty)
         latest_ts = max(latest_ts, int(sub["timestamp"]))
-
         time.sleep(1.5)
 
     if latest_ts:
