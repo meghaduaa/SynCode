@@ -9,7 +9,6 @@ USERNAME = os.getenv("LEETCODE_USERNAME")
 SESSION = os.getenv("LEETCODE_SESSION")
 CSRF = os.getenv("LEETCODE_CSRF")
 
-# Headers for GraphQL + cookies
 HEADERS = {
     "Content-Type": "application/json",
     "Referer": "https://leetcode.com",
@@ -22,7 +21,6 @@ GRAPHQL_ENDPOINT = "https://leetcode.com/graphql"
 LAST_FETCH_FILE = "last_fetch.json"
 SAVE_ROOT = "leetcode"
 
-# Language extension map
 LANGUAGE_EXT = {
     "cpp": "cpp",
     "python3": "py",
@@ -38,7 +36,6 @@ LANGUAGE_EXT = {
     "rust": "rs"
 }
 
-
 def read_last_timestamp():
     if not os.path.exists(LAST_FETCH_FILE):
         return 0
@@ -46,11 +43,9 @@ def read_last_timestamp():
         data = json.load(f)
         return data.get("last_fetch", 0)
 
-
 def save_last_timestamp(ts):
     with open(LAST_FETCH_FILE, "w") as f:
         json.dump({"last_fetch": ts}, f)
-
 
 def fetch_submissions():
     submissions = []
@@ -109,13 +104,12 @@ def fetch_submissions():
     print(f"[+] Found {len(submissions)} new accepted submissions.")
     return submissions
 
-
 def fetch_code(submission_id):
     query = {
         "operationName": "submissionDetails",
         "query": """
             query submissionDetails($submissionId: Int!) {
-              submissionDetail(submissionId: $submissionId) {
+              submissionDetails(submissionId: $submissionId) {
                 code
               }
             }
@@ -128,11 +122,10 @@ def fetch_code(submission_id):
     res = requests.post(GRAPHQL_ENDPOINT, json=query, headers=HEADERS)
     if res.status_code == 200:
         data = res.json()
-        return data["data"]["submissionDetail"]["code"]
+        return data["data"]["submissionDetails"]["code"]
     else:
         print(f"[!] Error fetching code (HTTP {res.status_code}): {res.text}")
         return None
-
 
 def get_problem_difficulty(title_slug):
     query = {
@@ -151,10 +144,8 @@ def get_problem_difficulty(title_slug):
     data = res.json()
     return data["data"]["question"]["difficulty"]
 
-
 def sanitize_filename(title):
     return title.lower().replace(" ", "_").replace("/", "_")
-
 
 def save_submission(sub, code, difficulty):
     lang = sub["lang"]
@@ -173,7 +164,6 @@ def save_submission(sub, code, difficulty):
         f.write(code)
 
     print(f"[✓] Saved: {filepath}")
-
 
 def main():
     submissions = fetch_submissions()
@@ -197,7 +187,6 @@ def main():
     if latest_ts:
         save_last_timestamp(latest_ts)
         print("[✓] Updated last fetch timestamp.")
-
 
 if __name__ == "__main__":
     main()
