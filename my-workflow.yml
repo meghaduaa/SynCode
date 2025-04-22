@@ -1,0 +1,49 @@
+name: LeetCode Sync
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"  # Every 6 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run LeetCode Sync Script
+        env:
+          LEETCODE_USERNAME: ${{ secrets.LEETCODE_USERNAME }}
+          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+          LEETCODE_CSRF: ${{ secrets.LEETCODE_CSRF }}
+        run: python fetch_leetcode.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "leetcode-bot"
+          git config user.email "actions@github.com"
+          if [ -f "last_fetch.json" ]; then git add last_fetch.json; fi
+          git add leetcode/
+          git diff --cached --quiet || git commit -m "🤖 Sync LeetCode submissions"
+          git push
+
+      # Add GitHub Actions Prometheus Exporter
+      - name: GitHub Actions Prometheus Exporter
+        uses: louislam/github-actions-exporter@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          EXPORTER_PORT: 9798  # Port the exporter will expose on
