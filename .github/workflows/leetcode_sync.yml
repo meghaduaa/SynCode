@@ -40,10 +40,4 @@ jobs:
           git diff --cached --quiet || git commit -m "🤖 Sync LeetCode submissions"
           git push
 
-      # Add GitHub Actions Prometheus Exporter
-      - name: GitHub Actions Prometheus Exporter
-        uses: louislam/github-actions-exporter@v1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          EXPORTER_PORT: 9798  # Port the exporter will expose on
+
