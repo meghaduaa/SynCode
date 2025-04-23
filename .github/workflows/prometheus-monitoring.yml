@@ -1,8 +1,1 @@
-# In .github/workflows/prometheus-monitoring.yml
-- name: Collect workflow metrics
-  run: |
-    python .github/prometheus_monitoring/collect_metrics.py
-    
-- name: Push metrics to Prometheus Pushgateway
-  run: |
-    python .github/prometheus_monitoring/push_metrics.py
+
