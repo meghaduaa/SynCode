@@ -39,8 +39,9 @@ jobs:
           git add leetcode/
           git diff --cached --quiet || git commit -m "🤖 Sync LeetCode submissions"
           git push
-      - name: Send Prometheus metric
+     
+      - name: Push metrics to Pushgateway
         run: |
-         echo "leet_sync_duration_seconds 3.5" | curl --data-binary @- http://192.168.56.1:9091/metrics/job/leetsync
+          echo "leetsync_success_total{job=\"leetsync\"} 1" | curl --data-binary @- http://192.168.56.1:9091/metrics/job/leetsync
 
 
