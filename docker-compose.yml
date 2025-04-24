@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   prometheus:
@@ -7,6 +7,13 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    depends_on:
+      - pushgateway
+
+  pushgateway:
+    image: prom/pushgateway
+    ports:
+      - "9091:9091"
 
   grafana:
     image: grafana/grafana
