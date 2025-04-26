@@ -41,7 +41,4 @@ jobs:
           git push
      
      
-      - name: Push metric to Pushgateway
-        run: |
-          echo "leetsync_push_count 1" | curl --data-binary @- http://54.87.134.27:9091/metrics/job/leetsync
-
+     
