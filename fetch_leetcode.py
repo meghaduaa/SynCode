@@ -60,19 +60,19 @@ def fetch_submissions():
         query = {
             "operationName": "Submissions",
             "query": """
-                query Submissions($offset: Int!, $limit: Int!) {
-                  submissionList(offset: $offset, limit: $limit) {
+            query Submissions($offset: Int!, $limit: Int!) {
+                submissionList(offset: $offset, limit: $limit) {
                     hasNext
                     submissions {
-                      id
-                      timestamp
-                      statusDisplay
-                      lang
-                      title
-                      titleSlug
+                        id
+                        timestamp
+                        statusDisplay
+                        lang
+                        title
+                        titleSlug
                     }
-                  }
                 }
+            }
             """,
             "variables": {
                 "offset": offset,
@@ -85,6 +85,11 @@ def fetch_submissions():
 
         if "errors" in data:
             print("[-] Error fetching submissions:", data["errors"])
+            break
+
+        # Check if submissionList or submissions is present and valid
+        if not data.get("data") or not data["data"].get("submissionList") or data["data"]["submissionList"].get("submissions") is None:
+            print("[-] No submissions data returned or invalid response structure.")
             break
 
         subs = data["data"]["submissionList"]["submissions"]
