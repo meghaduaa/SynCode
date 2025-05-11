@@ -29,4 +29,8 @@
    GITHUB_TOKEN=your_github_token
    LEETCODE_USERNAME=your_leetcode_username
    LEETCODE_SESSION=your_leetcode_session_token
+3. **Build & Run with Docker**
+   ```bash
+   docker-compose up --build
+
 
