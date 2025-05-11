@@ -22,3 +22,11 @@
    ```bash
    git clone https://github.com/meghaduaa/SynCode.git
    cd SynCode
+
+2. **Configure Environment Variables**
+   ```
+   GITHUB_USERNAME=your_github_username
+   GITHUB_TOKEN=your_github_token
+   LEETCODE_USERNAME=your_leetcode_username
+   LEETCODE_SESSION=your_leetcode_session_token
+
