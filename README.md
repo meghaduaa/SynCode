@@ -32,5 +32,9 @@
 3. **Build & Run with Docker**
    ```bash
    docker-compose up --build
-
+📊 Monitoring (Optional)
+   If you want to monitor the sync using Prometheus:
+   -     Configure prometheus.yml as needed
+   -     Mount it inside a Prometheus container
+   -     Expose and view metrics in Grafana
 
